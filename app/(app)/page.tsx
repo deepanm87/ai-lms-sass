@@ -15,11 +15,21 @@ import {
   Sparkles,
   LayoutDashboard
 } from "lucide-react"
+import { sanityFetch } from "@/sanity/lib/live"
+import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries"
 import { currentUser } from "@clerk/nextjs/server"
 
-export default function Home() {
+export default async function Home() {
+
+  const [{ data: courses }, { data: stats }, user] = await Promise.all([
+    sanityFetch({ query: FEATURED_COURSES_QUERY }),
+    sanityFetch({ query: STATS_QUERY }),
+    currentUser()
+  ])
 
   const isSignedIn = !!user
+
+
   return (
     <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
       <div className="fixed inset-0 pointer-events-none">
