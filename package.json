@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "schema:extract": "sanity schema extract --output-path ./schema.json",
+    "typegen": "./node_modules/@sanity/cli/bin/sanity typegen generate",
+    "types:generate": "pnpm run schema:extract && pnpm run typegen",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.1",
@@ -22,6 +26,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
+    "@sanity/client": "^7.13.1",
     "@sanity/icons": "^3.7.4",
     "@sanity/image-url": "^1.2.0",
     "@sanity/vision": "^4.20.3",

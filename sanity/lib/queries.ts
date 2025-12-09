@@ -1,4 +1,4 @@
-import { defineQuery } from "next-sanity"
+import { defineQuery } from "next-sanity";
 
 export const FEATURED_COURSES_QUERY = defineQuery(`*[
   _type == "course"
@@ -18,7 +18,7 @@ export const FEATURED_COURSES_QUERY = defineQuery(`*[
   },
   "moduleCount": count(modules),
   "lessonCount": count(modules[]->lessons[])
-}`)
+}`);
 
 export const ALL_COURSES_QUERY = defineQuery(`*[
   _type == "course"
@@ -37,11 +37,11 @@ export const ALL_COURSES_QUERY = defineQuery(`*[
   },
   "moduleCount": count(modules),
   "lessonCount": count(modules[]->lessons[])
-}`)
+}`);
 
-export const COURSES_BY_ID_QUERY = defineQuery(`*[
+export const COURSE_BY_ID_QUERY = defineQuery(`*[
   _type == "course"
-  && _id = $id
+  && _id == $id
 ][0] {
   _id,
   title,
@@ -69,11 +69,11 @@ export const COURSES_BY_ID_QUERY = defineQuery(`*[
       slug
     }
   }
-}`)
+}`);
 
 export const COURSE_BY_SLUG_QUERY = defineQuery(`*[
   _type == "course"
-  && slug.current = $slug
+  && slug.current == $slug
 ][0] {
   _id,
   title,
@@ -101,12 +101,12 @@ export const COURSE_BY_SLUG_QUERY = defineQuery(`*[
       slug
     }
   }
-}`)
+}`);
 
 export const STATS_QUERY = defineQuery(`{
   "courseCount": count(*[_type == "course"]),
   "lessonCount": count(*[_type == "lesson"])
-}`)
+}`);
 
 export const DASHBOARD_COURSES_QUERY = defineQuery(`*[
   _type == "course"
@@ -135,11 +135,11 @@ export const DASHBOARD_COURSES_QUERY = defineQuery(`*[
   },
   "moduleCount": count(modules),
   "lessonCount": count(modules[]->lessons[])
-}`)
+}`);
 
 export const COURSE_WITH_MODULES_QUERY = defineQuery(`*[
   _type == "course"
-  && slug.current = $slug
+  && slug.current == $slug
 ][0] {
   _id,
   title,
@@ -179,10 +179,10 @@ export const COURSE_WITH_MODULES_QUERY = defineQuery(`*[
   "moduleCount": count(modules),
   "lessonCount": count(modules[]->lessons[]),
   "completedLessonCount": count(modules[]->lessons[]->completedBy[@==$userId])
-}`)
+}`);
 
 export const LESSON_BY_ID_QUERY = defineQuery(`*[
-  _type == "$lesson"
+  _type == "lesson"
   && _id == $id
 ][0] {
   _id,
@@ -218,7 +218,7 @@ export const LESSON_BY_ID_QUERY = defineQuery(`*[
       }
     }
   }
-}`)
+}`);
 
 export const LESSON_BY_SLUG_QUERY = defineQuery(`*[
   _type == "lesson"
@@ -239,7 +239,7 @@ export const LESSON_BY_SLUG_QUERY = defineQuery(`*[
   },
   content,
   completedBy,
-  "courses": *[_type == "course" && ^._id in modules[]->lessons[]->id] | order(
+  "courses": *[_type == "course" && ^._id in modules[]->lessons[]->_id] | order(
     select(tier == "free" => 0, tier == "pro" => 1, tier == "ultra" => 2)
   ) {
     _id,
@@ -257,7 +257,7 @@ export const LESSON_BY_SLUG_QUERY = defineQuery(`*[
       }
     }
   }
-}`)
+}`);
 
 export const LESSON_NAVIGATION_QUERY = defineQuery(`*[
   _type == "course"
@@ -274,4 +274,4 @@ export const LESSON_NAVIGATION_QUERY = defineQuery(`*[
       title
     }
   }
-}`)
+}`);
