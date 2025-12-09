@@ -227,5 +227,5 @@ function Logo() {
         </span>
       </div>
     </>
-  );
+  )
 }
