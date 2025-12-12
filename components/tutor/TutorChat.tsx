@@ -7,6 +7,9 @@ import { TutorMessages } from "./TutorMessages"
 
 export function TutorChat() {
   const [inputValue, setInputValue] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null)
+  const [isRetrying, setIsRetrying] = useState(false)
 
   const { messages, sendMessage, status } = useChat({
     messages: [
@@ -36,14 +39,40 @@ export function TutorChat() {
     inputRef.current?.focus()
   }, [])
 
-  const handleSubmit = (e: FormEvent) => {
+  // The `useChat` hook reports streaming/submitted/ready statuses; 
+  // we rely on promise rejections from `sendMessage` to detect errors.
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!inputValue.trim() || isLoading) {
       return
     }
 
-    sendMessage({ text: inputValue })
-    setInputValue("")
+    setError(null)
+    const textToSend = inputValue
+    try {
+      await sendMessage({ text: textToSend })
+      setInputValue("")
+      setLastFailedMessage(null)
+    } catch (err) {
+      const msg = (err as Error)?.message ?? "Failed to send message"
+      setError(msg)
+      setLastFailedMessage(textToSend)
+    }
+  }
+
+  const handleRetry = async () => {
+    if (!lastFailedMessage || isRetrying) return
+    setIsRetrying(true)
+    setError(null)
+    try {
+      await sendMessage({ text: lastFailedMessage })
+      setLastFailedMessage(null)
+    } catch (err) {
+      setError((err as Error)?.message ?? "Failed to send message")
+    } finally {
+      setIsRetrying(false)
+    }
   }
 
   return (
@@ -55,6 +84,34 @@ export function TutorChat() {
         />
         <div ref={messagesEndRef} />
       </div>
+
+      {error && (
+        <div className="px-6" aria-live="polite">
+          <div className="rounded-lg bg-red-700/10 border border-red-700/20 p-3 text-red-300 text-sm flex items-center justify-between gap-4">
+            <div>
+              <strong className="font-semibold">Chat error:</strong>
+              <span className="ml-2"> {error}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleRetry}
+                disabled={isRetrying}
+                className="px-3 py-1 rounded bg-red-600/90 text-white text-sm"
+              >
+                {isRetrying ? "Retrying..." : "Retry"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setError(null)}
+                className="px-3 py-1 rounded bg-white/5 text-white text-sm"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="shrink-0 p-6 border-t border-cyan-500/20 bg-slate-900/80 backdrop-blur-sm">
         <form onSubmit={handleSubmit} className="relative">

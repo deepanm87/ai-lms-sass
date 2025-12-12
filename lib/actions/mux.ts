@@ -206,7 +206,7 @@ export async function getMuxSignedTokens(
     const thumbnailToken = jwt.sign(
       { sub: playbackId, exp: expirationTime, kid: signingKeyId, aud: "t" },
       formattedKey,
-      { algorigthm: "RS256" }
+      { algorithm: "RS256" }
     )
 
     const storyboardToken = jwt.sign(
@@ -217,7 +217,7 @@ export async function getMuxSignedTokens(
 
     return { playbackToken, thumbnailToken, storyboardToken }
   } catch (error) {
-    const errorMessage= = error instanceof Error
+    const errorMessage = error instanceof Error
       ? error.message
       : "Failed to generate signed tokens"
 

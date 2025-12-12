@@ -4,7 +4,7 @@ import { defineQuery } from "next-sanity"
 import { sanityFetch } from "@/sanity/lib/live"
 
 const ALL_COURSES_WITH_CONTENT_QUERY = defineQuery(`*[
-  _type == "courses"
+  _type == "course"
 ] | order(_createdAt desc) {
   _id,
   title,
@@ -37,7 +37,7 @@ interface Lesson {
   title: string
   slug: string | null
   description: string | null
-  contextText: string | null
+  contentText: string | null
 }
 
 interface Module {
@@ -58,7 +58,7 @@ interface Course {
 }
 
 function textContains(
-  text: string | null | undefined
+  text: string | null | undefined,
   searchTerm: string
 ): boolean {
   if (!text) {
@@ -115,9 +115,19 @@ export const searchCourseTool = tool({
   description: "Search through all courses, modules, and lessons by topic, skill, or learning goal. This searches course titles,    descriptions, module content, and lesson content to find the most relevant learning material.",
   inputSchema: courseSearchSchema,
   execute: async ({ query }: z.infer<typeof courseSearchSchema>) => {
-    const { data: allCourses } = await sanityFetch({
-      query: ALL_COURSES_WITH_CONTENT_QUERY
-    })
+    let allCourses: unknown
+    try {
+      const res = await sanityFetch({ query: ALL_COURSES_WITH_CONTENT_QUERY })
+      // defineLive `sanityFetch` returns an object with `data` in some cases; normalize
+      allCourses = (res as any).data ?? res
+    } catch (error) {
+      console.error("searchCourseTool: failed to fetch courses", error)
+      return {
+        found: false,
+        message: "Failed to search courses at this time.",
+        courses: []
+      }
+    }
 
     const searchTerms = query
       .toLowerCase()
@@ -156,7 +166,8 @@ export const searchCourseTool = tool({
         return {
           title: module.title,
           description: module.description,
-          lesson: lessons.map(lesson => ({
+          // use `lessons` (plural) to match downstream expectations
+          lessons: lessons.map(lesson => ({
             title: lesson.title,
             slug: lesson.slug,
             description: lesson.description,
@@ -164,7 +175,7 @@ export const searchCourseTool = tool({
               ? lesson.contentText?.slice(0, 2000) +
                 (lesson.contentText.length > 2000 ? "..." : "")
               : null,
-              lessonUrl: lesson.slug ? `/lessons/${lesson.slug}` : null
+            lessonUrl: lesson.slug ? `/lessons/${lesson.slug}` : null
           }))
         }
       })

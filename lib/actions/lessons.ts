@@ -26,7 +26,8 @@ export async function toggleLessonCompletion(
       await writeClient
         .patch(lessonId)
         .setIfMissing({ completedBy: [] })
-        .append("completeBy", [userId])
+        // append should target the `completedBy` field on the lesson document
+        .append("completedBy", [userId])
         .commit()
     } else {
       await writeClient

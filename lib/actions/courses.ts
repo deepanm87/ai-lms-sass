@@ -36,7 +36,8 @@ export async function toggleCourseCompletion(
     }
 
     revalidatePath(`/courses/${courseSlug}`)
-    revalidatePath("/dahboard")
+    // make sure dashboard path is spelled correctly so revalidation hits the right page
+    revalidatePath("/dashboard")
 
     return {
       success: true,

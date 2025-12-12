@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai"
 import { ToolLoopAgent } from "ai"
-import { searchCoursesTool } from "./tools/search-courses"
+import { searchCourseTool } from "./tools/search-courses"
 
 export const tutorAgent = new ToolLoopAgent({
   model: openai("gpt-4o"),
@@ -67,6 +67,6 @@ Do NOT try to answer from general knowledge if we don't have content on it.
 
 You're a tutor who knows our course content well and helps students learn!`,
   tools: {
-    searchCourses: searchCoursesTool,
+    searchCourses: searchCourseTool,
   },
 })

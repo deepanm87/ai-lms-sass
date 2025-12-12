@@ -6,7 +6,7 @@ import Link from "next/link"
 import Markdown from "react-markdown"
 import { useTutor } from "./TutorContext"
 
-interface TutorMessageProps {
+interface TutorMessagesProps {
   messages: UIMessage[]
   isLoading: boolean
 }
@@ -122,7 +122,7 @@ export function TutorMessages({ messages, isLoading }: TutorMessagesProps) {
             <div className="flex gap-1.5">
               <span className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
               <span className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-              <span className="w-2.5 h-2.5 by-cyan-400 rounded-full animate-bounce" />
+              <span className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-bounce" />
             </div>
           </div>
         </div>
@@ -137,8 +137,8 @@ function ToolCallUI({ toolPart }: { toolPart: ToolCallPart }) {
 
   const isComplete = 
     toolPart.state === "result" ||
-    toolPart.result !== "undefined" ||
-    toolPart.output !== "undefined" ||
+    toolPart.result !== undefined ||
+    toolPart.output !== undefined ||
     Object.keys(toolPart).some(
       key =>
         key.toLowerCase().includes("result") ||
@@ -166,7 +166,7 @@ function ToolCallUI({ toolPart }: { toolPart: ToolCallPart }) {
         ) : (
           <Loader2 className="w-5 h-5 text-amber-400 animate-spin shrink-0" />
         )}
-        <div className="flex felx-col">
+        <div className="flex flex-col">
           <span className={`font-medium ${isComplete ? "text-emerald-300" : "text-amber-300"}`}>
             {isComplete ? `${displayName} complete` : `${displayName}...`}
           </span>
