@@ -193,7 +193,7 @@ export default function AdminBreadcrumb() {
             >
               {index > 0 && <BreadcrumbSeparator className="text-zinc-600" />}
               <BreadcrumbItem>
-                {isLast ? (
+                {isList ? (
                   <BreadcrumbPage className="text-zinc-300 truncate max-w-[180px]">
                     {item.label}
                   </BreadcrumbPage>
