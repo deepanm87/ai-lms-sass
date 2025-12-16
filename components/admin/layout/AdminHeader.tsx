@@ -28,7 +28,7 @@ const NAV_ITEMS = [
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/modules", label: "Modules", icon: Layers },
   { href: "/admin/lessons", label: "Lessons", icon: PlayCircle },
-  { href: "/admin/catgories", label: "Categories", icon: Tag }
+  { href: "/admin/categories", label: "Categories", icon: Tag }
 ]
 
 export default function AdminHeader() {
