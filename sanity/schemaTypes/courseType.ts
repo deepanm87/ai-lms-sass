@@ -77,7 +77,7 @@ export const courseType = defineType({
       validation: Rule => [ Rule.required().error("Select an access tier for this course")]
     }),
     defineField({
-      name: "module",
+      name: "modules",
       type: "array",
       group: "modules",
       description: "Course modules in order",
