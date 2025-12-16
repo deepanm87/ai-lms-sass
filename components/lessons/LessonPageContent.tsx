@@ -11,8 +11,35 @@ import { LessonCompleteButton } from "./LessonCompleteButton"
 import { LessonSidebar } from "./LessonSidebar"
 import type { LESSON_BY_ID_QUERYResult } from "@/sanity.types"
 
+// Explicit local types to avoid 'never' types from generated typings
+type LessonType = {
+  _id: string
+  title?: string | null
+  description?: string | null
+  slug?: { current?: string | null } | null
+  content?: any
+  video?: { asset?: { playbackId?: string | null } | null } | null
+  completedBy?: string[] | null
+  courses?: Array<{
+    _id: string
+    title?: string | null
+    slug?: { current?: string | null } | null
+    tier?: "free" | "pro" | "ultra" | null
+    modules?: Array<{
+      _id: string
+      title?: string | null
+      lessons?: Array<{
+        _id: string
+        title?: string | null
+        slug?: { current?: string | null } | null
+        completedBy?: string[] | null
+      }> | null
+    }> | null
+  }> | null
+}
+
 interface LessonPageContentProps {
-  lesson: NonNullable<LESSON_BY_ID_QUERYResult>
+  lesson: LessonType
   userId: string | null
 }
 
@@ -78,7 +105,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
       {activeCourse && hasAccess && (
         <LessonSidebar 
           courseSlug={activeCourse.slug!.current!}
-          courseTitle={activeCourse.title}
+          courseTitle={activeCourse.title ?? null}
           modules={activeCourse.modules ?? null}
           currentLessonId={lesson._id}
           completedLessonIds={completedLessonIds}
@@ -148,7 +175,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
                   href={`/lessons/${nextLesson.slug}`}
                 >
                   <Button
-                    className="bg-violet-600 hover:bg-violet--500 text-white"
+                    className="bg-violet-600 hover:bg-violet-500 text-white"
                   >
                     <span className="hidden sm:inline">{nextLesson.title}</span>
                     <span className="sm:hidden">Next</span>

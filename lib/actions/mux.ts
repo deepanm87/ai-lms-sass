@@ -83,50 +83,52 @@ export async function getMuxUploadStatus(
 
   try {
     const upload = await mux.video.uploads.retrieve(uploadId)
+    const uploadAny = upload as any
 
-    if (upload.asset._id) {
-      const asset = await mux.video.assets.retrieve(upload.asset_id)
-      const signedPlayback = asset.playback_ids?.find(
-        p => p.policy === "signed"
+    if (uploadAny?.asset?._id) {
+      const asset = await mux.video.assets.retrieve(uploadAny.asset_id ?? uploadAny.asset?.id)
+      const assetAny = asset as any
+      const signedPlayback = assetAny.playback_ids?.find(
+        (p: any) => p.policy === "signed"
       )
 
-      if (asset.status === "ready" && signedPlayback) {
+      if (assetAny.status === "ready" && signedPlayback) {
         const sanityAssetId = crypto.randomUUID()
 
         await writeClient.createOrReplace({
           _id: sanityAssetId,
           _type: "mux.videoAsset",
-          status: asset.status,
-          assetId: asset.id,
+          status: assetAny.status,
+          assetId: assetAny.id,
           playbackId: signedPlayback.id,
-          uploadId: asset.upload._id,
+          uploadId: assetAny.upload?._id,
           data: {
-            aspect_ratio: asset.aspect_ratio,
-            created_at: asset.created_at,
-            duration: asset.duration,
-            encoding_tier: asset.encoding_tier,
-            id: asset.id,
-            ingest_type: asset.ingest_type,
-            master_access: asset.master_access,
-            max_resolution_tier: asset.max_resolution_tier,
-            max_stored_frame_rate: asset.max_stored_frame_rate,
-            max_stored_resolution: asset.max_stored_resolution,
-            mp4_support: asset.mp4_support,
+            aspect_ratio: assetAny.aspect_ratio,
+            created_at: assetAny.created_at,
+            duration: assetAny.duration,
+            encoding_tier: assetAny.encoding_tier,
+            id: assetAny.id,
+            ingest_type: assetAny.ingest_type,
+            master_access: assetAny.master_access,
+            max_resolution_tier: assetAny.max_resolution_tier,
+            max_stored_frame_rate: assetAny.max_stored_frame_rate,
+            max_stored_resolution: assetAny.max_stored_resolution,
+            mp4_support: assetAny.mp4_support,
             passthrough: sanityAssetId,
-            playback_ids: asset.playback_ids?.map(p => ({
+            playback_ids: assetAny.playback_ids?.map((p: any) => ({
               id: p.id,
               policy: p.policy
             })),
-            resolution_tier: asset.resolution_tier,
-            status: asset.status,
-            tracks: asset.tracks,
-            upload_id: asset.upload_id,
-            video_quality: asset.video_quality
+            resolution_tier: assetAny.resolution_tier,
+            status: assetAny.status,
+            tracks: assetAny.tracks,
+            upload_id: assetAny.upload_id,
+            video_quality: assetAny.video_quality
           }
         })
 
         return {
-          status: asset.status as MuxAssetStatus["status"],
+          status: assetAny.status as MuxAssetStatus["status"],
           playbackId: signedPlayback.id,
           assetId: asset.id,
           sanityAssetId

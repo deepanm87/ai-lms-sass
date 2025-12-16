@@ -101,7 +101,7 @@ function PortableTextInputField({
       setIsUploading(true)
 
       try {
-        const formData = new FormDate()
+        const formData = new FormData()
         formData.append("file", file)
 
         const result = await uploadImage(formData)
@@ -112,7 +112,7 @@ function PortableTextInputField({
         }
 
         if (result.assetId) {
-          setPendingImageAssetId(result.userId)
+          setPendingImageAssetId(result.assetId)
         }
       } catch (err) {
         setUploadError(
@@ -153,7 +153,7 @@ function PortableTextInputField({
     ]
 
     pendingMutationCountRef.current++
-    editContent(newContent)
+    editContent(newCount)
 
     setEditorKey(k => k + 1)
 

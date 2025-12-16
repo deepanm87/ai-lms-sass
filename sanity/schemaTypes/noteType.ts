@@ -23,7 +23,7 @@ export const noteType = defineType({
       type: "string",
       options: {
         list: [
-          { tile: "Draft", value: "draft" },
+          { title: "Draft", value: "draft" },
           { title: "In Progress", value: "inProgress" },
           { title: "Complete", value: "complete" }
         ],

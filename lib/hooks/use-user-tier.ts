@@ -34,4 +34,5 @@ export function hasTierAccess(
     return userTier === "pro" || userTier === "ultra"
   }
 
+  return false
 }

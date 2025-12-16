@@ -108,7 +108,7 @@ export function ModuleAccordionItemContent({
   });
 
   const title = (moduleData as { title?: string })?.title || "Untitled Module";
-  const lessons = (currentLessons as SanityReference[]) ?? [];
+  const lessons = (currentLessons ?? []) as SanityReference[];
   const currentLessonIds = new Set(lessons.map((l) => l._ref));
 
   // Filter out already-added lessons
@@ -137,7 +137,7 @@ export function ModuleAccordionItemContent({
 
       if (oldIndex !== -1 && newIndex !== -1) {
         const newLessons = arrayMove(lessons, oldIndex, newIndex);
-        editLessons(newLessons as SanityReference[]);
+        (editLessons as any)(newLessons as SanityReference[]);
       }
     }
   };
@@ -151,12 +151,12 @@ export function ModuleAccordionItemContent({
       _key: crypto.randomUUID(),
     };
 
-    editLessons([...lessons, newLesson] as SanityReference[]);
+    (editLessons as any)([...lessons, newLesson] as SanityReference[]);
     setSelectedLessonToAdd("");
   };
 
   const handleRemoveLesson = (lessonRef: string) => {
-    editLessons(lessons.filter((l) => l._ref !== lessonRef) as SanityReference[]);
+    (editLessons as any)(lessons.filter((l) => l._ref !== lessonRef) as SanityReference[]);
   };
 
   const lessonSortableIds = lessons.map((l) => l._key ?? l._ref);

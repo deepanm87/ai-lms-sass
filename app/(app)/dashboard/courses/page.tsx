@@ -13,29 +13,43 @@ export default async function MyCoursesPage() {
     redirect("/")
   }
 
-  const { data: courses } = await sanityFetch({
+  const result = await sanityFetch({
     query: DASHBOARD_COURSES_QUERY,
     params: { userId: user.id }
   })
 
-  type Course = (typeof courses)[number]
+  const courses = result.data as Course[]
+
+  type Course = {
+    modules?: Array<{
+      lessons?: Array<{ completedBy?: string[] | null }>
+    }> | null
+    moduleCount?: number | null
+    slug?: { current?: string | null } | null
+    title?: string | null
+    description?: string | null
+    tier?: "free" | "pro" | "ultra" | null
+    thumbnail?: any
+    completedBy?: string[] | null
+  }
+
   type CourseWithProgress = Course & {
     totalLessons: number
     completedLessons: number
   }
 
   const startedCourses = courses.reduce<CourseWithProgress[]>((acc, course) => {
-    const { total, completed } = (course.modules ?? []).reduce(
-      (stats, m) => 
-      (m.lessons ?? []).reduce(
-        (s, l) => ({
-          total: s.total  + 1,
-          completed: s.completed + (l.completedBy?.includes(user.id) ? 1 : 0)
-        }),
-        stats
-      ),
-      { total: 0, completed: 0 }
-    )
+    let total = 0
+    let completed = 0
+
+    for (const m of course.modules ?? []) {
+      for (const l of m.lessons ?? []) {
+        total += 1
+        if (l.completedBy?.includes(user.id)) {
+          completed += 1
+        }
+      }
+    }
 
     if (completed > 0) {
       acc.push({ ...course, totalLessons: total, completedLessons: completed })
@@ -80,11 +94,11 @@ export default async function MyCoursesPage() {
               <CourseCard 
                 key={course.slug!.current!}
                 slug={{ current: course.slug!.current! }}
-                title={course.title}
-                description={course.description}
-                tier={course.tier}
+                title={course.title ?? null}
+                description={course.description ?? null}
+                tier={course.tier ?? null}
                 thumbnail={course.thumbnail}
-                moduleCount={course.moduleCount}
+                moduleCount={course.moduleCount ?? null}
                 lessonCount={course.totalLessons}
                 completedLessonCount={course.completedLessons}
                 isCompleted={course.completedBy?.includes(user.id) ?? false}

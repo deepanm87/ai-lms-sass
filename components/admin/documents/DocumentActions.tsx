@@ -31,7 +31,7 @@ function DocumentActionsContent({
   documentType,
   projectId,
   dataset
-}: DocumentActionProps) {
+}: DocumentActionsProps) {
   const router = useRouter()
   const apply = useApplyDocumentActions()
 
@@ -59,6 +59,7 @@ function DocumentActionsContent({
     if (documentType === "category") {
       return "/admin/categories"
     }
+    return "/admin"
   }
 
   return (

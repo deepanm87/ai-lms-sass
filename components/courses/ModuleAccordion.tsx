@@ -11,11 +11,20 @@ import {
 import { Progress } from "@/components/ui/progress";
 import type { COURSE_WITH_MODULES_QUERYResult } from "@/sanity.types";
 
-// Infer types from Sanity query result
-type Module = NonNullable<
-  NonNullable<COURSE_WITH_MODULES_QUERYResult>["modules"]
->[number];
-type Lesson = NonNullable<Module["lessons"]>[number];
+// Explicit types for module and lesson to avoid overly-narrow generated types
+type Lesson = {
+  _id: string
+  title?: string | null
+  slug?: { current?: string | null } | null
+  completedBy?: string[] | null
+  video?: { asset?: { playbackId?: string | null } | null } | null
+}
+
+type Module = {
+  _id: string
+  title?: string | null
+  lessons?: Lesson[] | null
+}
 
 interface ModuleAccordionProps {
   modules: Module[] | null;

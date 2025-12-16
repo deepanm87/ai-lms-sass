@@ -16,10 +16,10 @@ export interface CourseCardProps
     | "description"
     | "tier"
     | "thumbnail"
-    | "moduleContent"
-    | "lessonCount"
   > {
     slug?: { current: string } | null
+    moduleCount?: number | null
+    lessonCount?: number | null
     href?: string
     completedLessonCount?: number | null
     isCompleted?: boolean

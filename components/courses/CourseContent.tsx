@@ -9,8 +9,33 @@ import { useUserTier, hasTierAccess } from "@/lib/hooks/use-user-tier"
 import type { COURSE_WITH_MODULES_QUERYResult } from "@/sanity.types"
 import { Skeleton } from "@/components/ui/skeleton"
 
+// Explicit local types to avoid generated 'never' issues
+type Lesson = {
+  _id: string
+  completedBy?: string[] | null
+}
+
+type Module = {
+  _id: string
+  lessons?: Lesson[] | null
+}
+
+type Course = {
+  _id: string
+  title?: string | null
+  description?: string | null
+  tier?: "free" | "pro" | "ultra" | null
+  thumbnail?: any
+  category?: any
+  moduleCount?: number | null
+  lessonCount?: number | null
+  modules?: Module[] | null
+  completedBy?: string[] | null
+  slug?: { current?: string | null } | null
+}
+
 interface CourseContentProps {
-  course: NonNullable<COURSE_WITH_MODULES_QUERYResult>
+  course: Course
   userId: string | null
 }
 
@@ -43,13 +68,13 @@ export function CourseContent({ course, userId }: CourseContentProps) {
     return (
       <>
         <CourseHero 
-          title={course.title}
+          title={course.title ?? null}
           description={course.description ?? null}
-          tier={course.tier}
+          tier={course.tier ?? null}
           thumbnail={course.thumbnail}
           category={course.category}
-          moduleCount={course.moduleCount}
-          lessonCount={course.lessonCount}
+          moduleCount={course.moduleCount ?? null}
+          lessonCount={course.lessonCount ?? null}
         />
 
         {hasAccess ? (

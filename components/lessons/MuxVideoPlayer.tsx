@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import MuxPlayer from "@mux/mux-player-react"
 import { VideoOff } from "lucide-react"
-import { getMuxSignedToken } from "@/lib/actions/mux"
+import { getMuxSignedTokens } from "@/lib/actions/mux"
 
 interface MuxVideoPlayerProps {
   playbackId: string | null | undefined

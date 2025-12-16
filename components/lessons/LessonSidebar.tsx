@@ -11,10 +11,18 @@ import {
 } from "@/components/ui/accordion"
 import type { LESSON_BY_ID_QUERYResult } from "@/sanity.types"
 
-type Course = NonNullable<LESSON_BY_ID_QUERYResult>["courses"][number]
-type CourseModules = Course["modules"]
-type Module = NonNullable<CourseModules>[number]
-type Lesson = NonNullable<Module["lessons"]>[number]
+// Provide explicit types for modules and lessons to avoid generated 'never' propagation
+type Lesson = {
+  _id: string
+  title?: string | null
+  slug?: { current?: string | null } | null
+}
+
+type Module = {
+  _id: string
+  title?: string | null
+  lessons?: Lesson[] | null
+}
 
 interface LessonSidebarProps {
   courseSlug: string

@@ -10,7 +10,7 @@ import {
   AccordionTrigger
 } from "@/components/ui/accordion"
 import { LessonItem } from "./LessonItem"
-import type { ModuleLessonsData } from "./types"
+import type { ModuleLessonData } from "./types"
 
 export function ModuleWithLessons({
   documentId,
@@ -29,7 +29,7 @@ export function ModuleWithLessons({
     }`
   })
 
-  const module = data as ModuleLessonsData | undefined
+  const module = data as ModuleLessonData | undefined
   const lessonRefs = module?.lessons ?? []
 
   if (lessonRefs.length === 0) {
@@ -54,7 +54,7 @@ export function ModuleWithLessons({
       </AccordionTrigger>
       <AccordionContent className="pb-2">
         <div className="space-y-1.5 pt-1">
-          {lessonRefs.map((ref, index) => 
+          {lessonRefs.map((ref: { _ref?: string }, index: number) => 
             ref._ref ? (
               <Suspense
                 key={ref._ref}
